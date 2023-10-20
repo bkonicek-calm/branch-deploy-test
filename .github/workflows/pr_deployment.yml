@@ -6,7 +6,7 @@ on:
 jobs:
   deploy-info:
     if: ${{ github.event.issue.pull_request }}
-    runs-on: ${{ inputs.runner-name }}
+    runs-on: ubuntu-latest
     outputs:
       deploy-sha: ${{ steps.branch-deploy.outputs.sha }}
       deploy-continue: ${{ steps.branch-deploy.outputs.continue }}
@@ -42,7 +42,7 @@ jobs:
         
   result:
     needs: [deploy-info, test]
-    runs-on: ${{ inputs.runner-name }}
+    runs-on: ubuntu-latest
     # run even on failures but only if the trigger job set continue to true
     if: ${{ always() && needs.deploy-info.outputs.deploy-continue == 'true' }}
 
