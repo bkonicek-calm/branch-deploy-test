@@ -86,7 +86,7 @@ jobs:
           # Fetch the lock.json file from the branch
           gh api \
             --method GET \
-            repos/{owner}/{repo}/contents/lock.json?ref=${{ needs.trigger.outputs.environment }}-branch-deploy-lock \
+            repos/{owner}/{repo}/contents/lock.json?ref=${{ needs.deploy-info.outputs.environment }}-branch-deploy-lock \
             --jq '.content' \
             | base64 --decode \
             > lock.json
@@ -99,7 +99,7 @@ jobs:
             echo "The lock is not sticky, deleting the lock"
             gh api \
               --method DELETE \
-              repos/{owner}/{repo}/git/refs/heads/${{ needs.trigger.outputs.environment }}-branch-deploy-lock
+              repos/{owner}/{repo}/git/refs/heads/${{ needs.deploy-info.outputs.environment }}-branch-deploy-lock
           fi
 
           rm lock.json
