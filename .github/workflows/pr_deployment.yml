@@ -83,9 +83,26 @@ jobs:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
         run: |
+          # Fetch the lock.json file from the branch
           gh api \
-            --method DELETE \
-            'repos/{owner}/{repo}/git/refs/heads/${{ needs.deploy-info.outputs.environment }}-branch-deploy-lock'
+            --method GET \
+            repos/{owner}/{repo}/contents/lock.json?ref=${{ needs.trigger.outputs.environment }}-branch-deploy-lock \
+            --jq '.content' \
+            | base64 --decode \
+            > lock.json
+          
+          # Check if the sticky value is true
+          if [ "$(jq -r '.sticky' lock.json)" = "true" ]; then
+            echo "The lock is sticky, skipping the delete step"
+          else
+            # use the GitHub CLI to remove the non-sticky lock that was created by the branch-deploy action
+            echo "The lock is not sticky, deleting the lock"
+            gh api \
+              --method DELETE \
+              repos/{owner}/{repo}/git/refs/heads/${{ needs.trigger.outputs.environment }}-branch-deploy-lock
+          fi
+
+          rm lock.json
 
       # remove the default 'eyes' reaction from the comment that triggered the deployment
       # this reaction is added by the branch-deploy action by default
