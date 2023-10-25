@@ -44,7 +44,7 @@ jobs:
     needs: deploy-info
     if: ${{ needs.deploy-info.outputs.deploy-continue == 'true' && needs.deploy-info.outputs.deploy-noop != 'true' }}
     steps:
-      - name: fail on purpose
+      - name: randomly fail
         run: exit $((RANDOM % 2))
         
   result:
