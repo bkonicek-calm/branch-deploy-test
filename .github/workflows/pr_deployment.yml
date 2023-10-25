@@ -114,6 +114,7 @@ jobs:
       # remove the default 'eyes' reaction from the comment that triggered the deployment
       # this reaction is added by the branch-deploy action by default
       - name: remove eyes reaction
+        continue-on-error: true
         env:
           GH_REPO: ${{ github.repository }}
           GH_TOKEN: ${{ github.token }}
