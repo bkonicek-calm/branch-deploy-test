@@ -95,7 +95,7 @@ jobs:
             repos/{owner}/{repo}/contents/lock.json?ref=${{ needs.deploy-info.outputs.environment }}-branch-deploy-lock \
             --jq '.content' \
             | base64 --decode \
-            > lock.json || true
+            > lock.json
           
           # Check if the sticky value is true
           if [ "$(jq -r '.sticky' lock.json)" = "true" ]; then
